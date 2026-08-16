@@ -1,0 +1,86 @@
+services:
+  banco:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: eventops
+      POSTGRES_USER: eventops
+      POSTGRES_PASSWORD: eventops
+    ports:
+      - "54324:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventops -d eventops"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    volumes:
+      - dados-banco:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.4
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      - "18082:8080"
+    volumes:
+      - ./docker/keycloak/eventops-realm.json:/opt/keycloak/data/import/eventops-realm.json:ro
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "11025:1025"
+      - "18025:8025"
+
+  aplicacao:
+    build: .
+    environment:
+      EVENTOPS_BANCO_URL: jdbc:postgresql://banco:5432/eventops
+      EVENTOPS_BANCO_USUARIO: eventops
+      EVENTOPS_BANCO_SENHA: eventops
+      EVENTOPS_EMISSOR_JWT: http://localhost:18082/realms/eventops
+      EVENTOPS_URL_CHAVES_JWK: http://keycloak:8080/realms/eventops/protocol/openid-connect/certs
+      EVENTOPS_EMAIL_HOST: mailpit
+      EVENTOPS_EMAIL_PORTA: 1025
+      EVENTOPS_URL_PUBLICA: http://localhost:8081
+      SERVER_PORT: 8080
+    ports:
+      - "8081:8080"
+    depends_on:
+      banco:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      mailpit:
+        condition: service_started
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    profiles: ["observability"]
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - "19091:9090"
+    volumes:
+      - ./docker/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      aplicacao:
+        condition: service_healthy
+
+  grafana:
+    image: grafana/grafana:11.6.0
+    profiles: ["observability"]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: eventops
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "13001:3000"
+    volumes:
+      - ./docker/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docker/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+volumes:
+  dados-banco:

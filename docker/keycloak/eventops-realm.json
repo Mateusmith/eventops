@@ -1,0 +1,49 @@
+{
+  "realm": "eventops",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "clients": [
+    {
+      "clientId": "eventops-postman",
+      "name": "EventOps Postman",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "eventops-postman-secret",
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": false
+    },
+    {
+      "clientId": "eventops-swagger",
+      "name": "EventOps Swagger",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": false,
+      "standardFlowEnabled": true,
+      "redirectUris": ["http://localhost:8081/swagger-ui/oauth2-redirect.html"],
+      "webOrigins": ["http://localhost:8081"],
+      "attributes": {"pkce.code.challenge.method": "S256"}
+    }
+  ],
+  "users": [
+    {
+      "username": "organizador",
+      "enabled": true,
+      "email": "organizador@eventops.local",
+      "emailVerified": true,
+      "firstName": "Olivia",
+      "lastName": "Organizadora",
+      "credentials": [{"type": "password", "value": "eventops123", "temporary": false}]
+    },
+    {
+      "username": "operador",
+      "enabled": true,
+      "email": "operador@eventops.local",
+      "emailVerified": true,
+      "firstName": "Carlos",
+      "lastName": "Check-in",
+      "credentials": [{"type": "password", "value": "eventops123", "temporary": false}]
+    }
+  ]
+}
