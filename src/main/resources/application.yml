@@ -1,13 +1,13 @@
 spring:
   application:
-    name: eventops
+    name: gestao-eventos
   datasource:
     url: ${EVENTOPS_BANCO_URL:jdbc:postgresql://localhost:54324/eventops}
     username: ${EVENTOPS_BANCO_USUARIO:eventops}
     password: ${EVENTOPS_BANCO_SENHA:eventops}
     hikari:
       maximum-pool-size: ${EVENTOPS_TAMANHO_POOL:15}
-      connection-timeout: 5000
+      connection-timeout: ${EVENTOPS_TIMEOUT_CONEXAO_MS:120000}
   jpa:
     open-in-view: false
     hibernate:

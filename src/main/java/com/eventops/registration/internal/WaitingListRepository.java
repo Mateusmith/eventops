@@ -20,7 +20,7 @@ public interface WaitingListRepository extends JpaRepository<WaitingListEntity, 
             select item from WaitingListEntity item
              where item.eventoId = :eventoId
                and item.status = com.eventops.registration.WaitingListStatus.AGUARDANDO
-             order by item.entrouEm
+             order by item.entrouEm, item.id
             """)
     List<WaitingListEntity> buscarPrimeirosParaPromocao(@Param("eventoId") UUID eventoId, Pageable pagina);
 }

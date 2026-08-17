@@ -32,7 +32,7 @@ $tokenOperador = Obter-Token 'operador'
 
 $organizacao = Invoke-RestMethod -Method Post -Uri "$api/api/v1/organizacoes" `
     -Headers (Cabecalho $tokenOrganizador) -ContentType 'application/json' `
-    -Body (@{ nome = "EventOps Demo $sufixo"; documento = "DEMO-$sufixo" } | ConvertTo-Json)
+    -Body (@{ nome = "Gestao de Eventos Demo $sufixo"; documento = "DEMO-$sufixo" } | ConvertTo-Json)
 
 $null = Invoke-RestMethod -Method Post -Uri "$api/api/v1/organizacoes/$($organizacao.id)/membros" `
     -Headers (Cabecalho $tokenOrganizador) -ContentType 'application/json' `
@@ -48,7 +48,7 @@ $evento = Invoke-RestMethod -Method Post -Uri "$api/api/v1/eventos" `
     -Body (@{
         organizacaoId = $organizacao.id
         titulo = "Java Summit $sufixo"
-        descricao = 'Evento criado pelo teste real do EventOps.'
+        descricao = 'Evento criado pelo teste real da Gestao de Eventos.'
         local = 'Centro de Convencoes'
         fusoHorario = 'America/Sao_Paulo'
         inicioEm = $inicio.ToString('o')

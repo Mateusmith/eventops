@@ -6,4 +6,6 @@ target/
 .env
 secrets/*.txt
 !secrets/*.example.txt
+performance/results/*
+!performance/results/.gitkeep
 .DS_Store

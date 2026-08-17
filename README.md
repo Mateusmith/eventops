@@ -1,4 +1,4 @@
-# EventOps
+# Gestão de Eventos
 
 API Java para operacao segura de eventos presenciais: organizacoes e equipes, ciclo de vida do evento, capacidade concorrente, inscricoes, lista de espera, convites, indicacoes, credenciais QR, check-in idempotente, notificacoes e auditoria.
 
@@ -23,6 +23,7 @@ O projeto foi construido do zero como uma peca de portfolio. A proposta e resolv
 Requisitos: Docker Desktop. Java local so e necessario para executar os testes fora do container.
 
 ```powershell
+git clone https://github.com/Mateusmith/gestao-eventos.git
 cd gestao-eventos
 .\scripts\setup-local.ps1
 docker compose --profile observability up -d --build
@@ -49,7 +50,9 @@ O script cria `.env` e o arquivo local usado no scrape sem sobrescrever configur
 | Operador | `operador` | `eventops123` | `operador@eventops.local` |
 
 Essas credenciais existem somente no ambiente demonstrativo. O cliente publico `eventops-postman` nao possui segredo e o password grant deve permanecer restrito ao laboratorio.
-No Grafana, use os valores `EVENTOPS_GRAFANA_ADMIN_USER` e `EVENTOPS_GRAFANA_ADMIN_PASSWORD` do seu `.env`; o painel `EventOps - Operacao` e provisionado automaticamente.
+No Grafana, use os valores `EVENTOPS_GRAFANA_ADMIN_USER` e `EVENTOPS_GRAFANA_ADMIN_PASSWORD` do seu `.env`; o painel `Gestão de Eventos - Operação` e provisionado automaticamente.
+
+O nome publico do produto e **Gestão de Eventos**. Os prefixos tecnicos `EVENTOPS_*`, o pacote `com.eventops` e o realm `eventops` foram preservados para manter compatibilidade com ambientes existentes.
 
 ## Teste real automatizado
 
@@ -65,8 +68,18 @@ O primeiro script obtem tokens reais no Keycloak, cria organizacao e evento, adi
 A mesma jornada pode ser executada pela collection, na interface do Postman ou pelo Newman:
 
 ```powershell
-npx --yes newman run postman/EventOps.postman_collection.json
+npx --yes newman run postman/GestaoEventos.postman_collection.json
 ```
+
+## Teste de carga
+
+O benchmark reproduz uma abertura com 2.000 inscricoes concorrentes para 100 vagas e, em seguida, 50 cancelamentos concorrentes com promocao FIFO:
+
+```powershell
+.\scripts\run-load-test.ps1
+```
+
+O teste falha se houver overbooking, duplicidade, erro HTTP ou quebra da fila. Metodologia, orcamento e resultado de referencia estao em [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md).
 
 ## Observabilidade
 
@@ -110,13 +123,14 @@ As tabelas e colunas estao em portugues. Tokens secretos nunca sao armazenados e
 5. Leia o QR Code e envie o token ao endpoint protegido de check-in.
 6. Use sempre uma `Idempotency-Key` nova por tentativa logica.
 
-A colecao em [`postman/EventOps.postman_collection.json`](postman/EventOps.postman_collection.json) captura automaticamente IDs, slug, tokens e codigos entre as requisicoes. Os corpos completos tambem estao em [`docs/API_EXAMPLES.md`](docs/API_EXAMPLES.md).
+A colecao em [`postman/GestaoEventos.postman_collection.json`](postman/GestaoEventos.postman_collection.json) captura automaticamente IDs, slug, tokens e codigos entre as requisicoes. Os corpos completos tambem estao em [`docs/API_EXAMPLES.md`](docs/API_EXAMPLES.md).
 
 ## Documentacao
 
 - [Arquitetura e modulos](docs/ARCHITECTURE.md)
 - [Exemplos da API](docs/API_EXAMPLES.md)
 - [Banco de dados](docs/DATABASE.md)
+- [Desempenho e teste de carga](docs/PERFORMANCE.md)
 - [Preparacao para producao](docs/PRODUCTION.md)
 - [Decisoes arquiteturais](docs/adr/README.md)
 - [Politica de seguranca](SECURITY.md)

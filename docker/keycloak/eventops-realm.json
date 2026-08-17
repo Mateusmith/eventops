@@ -6,7 +6,7 @@
   "clients": [
     {
       "clientId": "eventops-postman",
-      "name": "EventOps Postman",
+      "name": "Gestão de Eventos - Postman",
       "enabled": true,
       "publicClient": true,
       "directAccessGrantsEnabled": true,
@@ -15,7 +15,7 @@
     },
     {
       "clientId": "eventops-swagger",
-      "name": "EventOps Swagger",
+      "name": "Gestão de Eventos - Swagger",
       "enabled": true,
       "publicClient": true,
       "directAccessGrantsEnabled": false,

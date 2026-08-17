@@ -12,9 +12,9 @@
     </parent>
 
     <groupId>com.eventops</groupId>
-    <artifactId>eventops</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
-    <name>EventOps</name>
+    <artifactId>gestao-eventos</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
+    <name>Gestão de Eventos</name>
     <description>Operacao segura de eventos, inscricoes, indicacoes e check-in</description>
 
     <properties>

@@ -1,8 +1,8 @@
-# Arquitetura do EventOps
+# Arquitetura da Gestão de Eventos
 
 ## Escolha principal
 
-O EventOps e um monolito modular. O dominio ainda precisa de consistencia transacional forte entre evento, inscricao, credencial e fila; separar esses componentes em microsservicos adicionaria sagas, contratos remotos e falhas distribuidas sem beneficio proporcional.
+A Gestão de Eventos e um monolito modular. O dominio ainda precisa de consistencia transacional forte entre evento, inscricao, credencial e fila; separar esses componentes em microsservicos adicionaria sagas, contratos remotos e falhas distribuidas sem beneficio proporcional.
 
 ```mermaid
 flowchart LR
@@ -47,7 +47,7 @@ flowchart LR
 
 ## Consistencia de capacidade
 
-A vaga nao e calculada com `COUNT` seguido de `INSERT`. O EventOps executa uma unica atualizacao condicional:
+A vaga nao e calculada com `COUNT` seguido de `INSERT`. A Gestão de Eventos executa uma unica atualizacao condicional:
 
 ```sql
 UPDATE eventos

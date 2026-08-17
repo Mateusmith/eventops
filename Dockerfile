@@ -8,7 +8,7 @@ RUN mvn -B -q -DskipTests package
 FROM eclipse-temurin:21-jre-alpine
 RUN addgroup -S eventops && adduser -S eventops -G eventops
 WORKDIR /app
-COPY --from=construcao /workspace/target/eventops-*.jar app.jar
+COPY --from=construcao /workspace/target/gestao-eventos-*.jar app.jar
 USER eventops
 EXPOSE 8080 9090
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=5 \

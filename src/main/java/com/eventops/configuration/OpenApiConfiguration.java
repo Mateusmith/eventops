@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfiguration {
 
     @Bean
-    OpenAPI eventOpsOpenApi(
+    OpenAPI gestaoEventosOpenApi(
             @Value("${EVENTOPS_URL_AUTORIZACAO:http://localhost:18082/realms/eventops/protocol/openid-connect/auth}")
             String urlAutorizacao,
             @Value("${EVENTOPS_URL_TOKEN:http://localhost:18082/realms/eventops/protocol/openid-connect/token}")
@@ -26,7 +26,7 @@ public class OpenApiConfiguration {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("EventOps API")
+                        .title("Gestão de Eventos API")
                         .version("v1")
                         .description("Operacao segura de eventos, inscricoes, indicacoes e check-in."))
                 .components(new Components().addSecuritySchemes("oauth2", esquema));

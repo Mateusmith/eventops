@@ -1,0 +1,47 @@
+name: benchmark-manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      tentativas:
+        description: Quantidade de inscricoes concorrentes (minimo 100)
+        required: true
+        default: "2000"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Obter codigo
+        uses: actions/checkout@v7
+
+      - name: Preparar segredos demonstrativos
+        shell: pwsh
+        run: |
+          Copy-Item .env.example .env
+          Copy-Item secrets/observability_password.example.txt secrets/observability_password.txt
+
+      - name: Iniciar plataforma
+        run: docker compose up -d --build
+
+      - name: Executar benchmark
+        shell: pwsh
+        env:
+          TENTATIVAS: ${{ inputs.tentativas }}
+        run: ./scripts/run-load-test.ps1 -Tentativas ([int] $env:TENTATIVAS)
+
+      - name: Publicar resultados
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: benchmark-${{ github.run_number }}
+          path: performance/results
+          if-no-files-found: warn
+
+      - name: Encerrar plataforma
+        if: always()
+        run: docker compose down -v
