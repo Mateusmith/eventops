@@ -24,11 +24,12 @@ Requisitos: Docker Desktop. Java local so e necessario para executar os testes f
 
 ```powershell
 cd gestao-eventos
+.\scripts\setup-local.ps1
 docker compose --profile observability up -d --build
 docker compose ps
 ```
 
-Na primeira inicializacao, Keycloak e Maven podem levar cerca de um minuto para preparar os caches.
+O script cria `.env` e o arquivo local usado no scrape sem sobrescrever configuracoes existentes. Troque os marcadores demonstrativos se o ambiente puder ser acessado por outra pessoa. Na primeira inicializacao, Keycloak e Maven podem levar cerca de um minuto para preparar os caches.
 
 | Recurso | Endereco |
 |---|---|
@@ -47,8 +48,8 @@ Na primeira inicializacao, Keycloak e Maven podem levar cerca de um minuto para 
 | Organizador | `organizador` | `eventops123` | `organizador@eventops.local` |
 | Operador | `operador` | `eventops123` | `operador@eventops.local` |
 
-Essas credenciais existem somente no ambiente demonstrativo. O cliente Postman e `eventops-postman`, com segredo `eventops-postman-secret`.
-No Grafana, use `admin` / `eventops`; o painel `EventOps - Operacao` e provisionado automaticamente.
+Essas credenciais existem somente no ambiente demonstrativo. O cliente publico `eventops-postman` nao possui segredo e o password grant deve permanecer restrito ao laboratorio.
+No Grafana, use os valores `EVENTOPS_GRAFANA_ADMIN_USER` e `EVENTOPS_GRAFANA_ADMIN_PASSWORD` do seu `.env`; o painel `EventOps - Operacao` e provisionado automaticamente.
 
 ## Teste real automatizado
 
@@ -69,7 +70,7 @@ npx --yes newman run postman/EventOps.postman_collection.json
 
 ## Observabilidade
 
-O perfil `observability` inicia Prometheus e Grafana. O dashboard versionado acompanha check-ins, repeticoes idempotentes, requisicoes HTTP, latencia p95 e heap da JVM. No ambiente local, `/actuator/prometheus` e publico para permitir o scrape; em producao, isole a porta de gerenciamento na rede interna ou aplique autenticacao entre Prometheus e aplicacao.
+O perfil `observability` inicia Prometheus e Grafana. O dashboard versionado acompanha check-ins, repeticoes idempotentes, requisicoes HTTP, latencia p95 e heap da JVM. O Actuator usa a porta interna `9090`, que nao e publicada no host: `health` e publico apenas nessa rede e as metricas exigem a credencial Basic compartilhada por Docker secret com o Prometheus.
 
 ## Testes Java
 
@@ -85,16 +86,18 @@ O perfil `observability` inicia Prometheus e Grafana. O dashboard versionado aco
 ```text
 host: localhost
 porta: 54324
-banco: eventops
-usuario: eventops
-senha: eventops
+banco: valor de EVENTOPS_POSTGRES_DB
+usuario: valor de EVENTOPS_POSTGRES_USER
+senha: valor de EVENTOPS_POSTGRES_PASSWORD
 ```
 
 Exemplo de acesso:
 
 ```powershell
-docker compose exec banco psql -U eventops -d eventops
+docker compose exec banco sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 ```
+
+O Compose carrega `.env` automaticamente; o comando usa as variaveis ja presentes no container.
 
 As tabelas e colunas estao em portugues. Tokens secretos nunca sao armazenados em texto puro.
 
@@ -114,6 +117,7 @@ A colecao em [`postman/EventOps.postman_collection.json`](postman/EventOps.postm
 - [Arquitetura e modulos](docs/ARCHITECTURE.md)
 - [Exemplos da API](docs/API_EXAMPLES.md)
 - [Banco de dados](docs/DATABASE.md)
+- [Preparacao para producao](docs/PRODUCTION.md)
 - [Decisoes arquiteturais](docs/adr/README.md)
 - [Politica de seguranca](SECURITY.md)
 - [Como contribuir](CONTRIBUTING.md)

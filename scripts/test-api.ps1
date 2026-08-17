@@ -11,7 +11,6 @@ function Obter-Token([string] $usuario) {
         -Body @{
             grant_type = 'password'
             client_id = 'eventops-postman'
-            client_secret = 'eventops-postman-secret'
             username = $usuario
             password = 'eventops123'
         }

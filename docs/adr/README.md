@@ -4,3 +4,4 @@
 - [ADR 0002 - Capacidade atomica](0002-atomic-capacity.md)
 - [ADR 0003 - Credenciais opacas](0003-opaque-credentials.md)
 - [ADR 0004 - Outbox e idempotencia](0004-outbox-idempotency.md)
+- [ADR 0005 - Seguranca operacional e observabilidade](0005-operational-security.md)

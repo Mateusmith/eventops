@@ -1,7 +1,9 @@
 package com.eventops;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -174,7 +176,17 @@ class EventOpsEndToEndIT {
                         .content("{\"nome\":\"Sem token\"}"))
                 .andExpect(status().isUnauthorized());
 
+        mvc.perform(get("/actuator/health"))
+                .andExpect(status().isOk());
+
         mvc.perform(get("/actuator/prometheus"))
+                .andExpect(status().isUnauthorized());
+
+        mvc.perform(get("/actuator/prometheus").with(user("operador").roles("OPERACAO")))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(get("/actuator/prometheus")
+                        .with(httpBasic("prometheus", "TesteObservabilidade@123")))
                 .andExpect(status().isOk());
 
         mvc.perform(get("/api/v1/publico/recurso-inexistente"))
@@ -182,9 +194,37 @@ class EventOpsEndToEndIT {
                 .andExpect(jsonPath("$.codigo").value("RECURSO_NAO_ENCONTRADO"));
     }
 
+    @Test
+    void deveIsolarDadosEntreOrganizacoes() throws Exception {
+        UUID organizacaoAna = criarOrganizacao(
+                "Organizacao Ana " + UUID.randomUUID(),
+                usuario("usuario-ana", "ana.gestora@eventops.local", "Ana Gestora", "ana"));
+        UUID organizacaoBruno = criarOrganizacao(
+                "Organizacao Bruno " + UUID.randomUUID(),
+                usuario("usuario-bruno", "bruno.gestor@eventops.local", "Bruno Gestor", "bruno"));
+
+        mvc.perform(get("/api/v1/eventos/organizacao/{organizacaoId}", organizacaoAna)
+                        .with(usuario("usuario-ana", "ana.gestora@eventops.local", "Ana Gestora", "ana")))
+                .andExpect(status().isOk());
+
+        mvc.perform(get("/api/v1/eventos/organizacao/{organizacaoId}", organizacaoBruno)
+                        .with(usuario("usuario-ana", "ana.gestora@eventops.local", "Ana Gestora", "ana")))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.codigo").value("SEM_ACESSO_ORGANIZACAO"));
+
+        mvc.perform(get("/api/v1/organizacoes/{organizacaoId}/auditorias", organizacaoBruno)
+                        .with(usuario("usuario-ana", "ana.gestora@eventops.local", "Ana Gestora", "ana")))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.codigo").value("SEM_ACESSO_ORGANIZACAO"));
+    }
+
     private UUID criarOrganizacao(String nome) throws Exception {
+        return criarOrganizacao(nome, organizador());
+    }
+
+    private UUID criarOrganizacao(String nome, JwtRequestPostProcessor autenticacao) throws Exception {
         MvcResult resultado = mvc.perform(post("/api/v1/organizacoes")
-                        .with(organizador())
+                        .with(autenticacao)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapeador.writeValueAsBytes(Map.of("nome", nome))))
                 .andExpect(status().isCreated())
@@ -232,10 +272,18 @@ class EventOpsEndToEndIT {
     }
 
     private JwtRequestPostProcessor organizador() {
+        return usuario(
+                "usuario-organizador",
+                "organizador@eventops.local",
+                "Olivia Organizadora",
+                "organizador");
+    }
+
+    private JwtRequestPostProcessor usuario(String id, String email, String nome, String nomeUsuario) {
         return jwt().jwt(token -> token
-                .subject("usuario-organizador")
-                .claim("email", "organizador@eventops.local")
-                .claim("name", "Olivia Organizadora")
-                .claim("preferred_username", "organizador"));
+                .subject(id)
+                .claim("email", email)
+                .claim("name", nome)
+                .claim("preferred_username", nomeUsuario));
     }
 }

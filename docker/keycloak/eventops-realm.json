@@ -8,8 +8,7 @@
       "clientId": "eventops-postman",
       "name": "EventOps Postman",
       "enabled": true,
-      "publicClient": false,
-      "secret": "eventops-postman-secret",
+      "publicClient": true,
       "directAccessGrantsEnabled": true,
       "standardFlowEnabled": false,
       "serviceAccountsEnabled": false

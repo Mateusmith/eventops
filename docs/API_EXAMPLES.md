@@ -8,7 +8,7 @@ Substitua valores entre chaves. A colecao Postman faz essa captura automaticamen
 POST http://localhost:18082/realms/eventops/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=password&client_id=eventops-postman&client_secret=eventops-postman-secret&username=organizador&password=eventops123
+grant_type=password&client_id=eventops-postman&username=organizador&password=eventops123
 ```
 
 Use `Authorization: Bearer {access_token}` nas rotas administrativas.

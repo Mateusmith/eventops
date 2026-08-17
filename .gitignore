@@ -4,4 +4,6 @@ target/
 *.iml
 *.log
 .env
+secrets/*.txt
+!secrets/*.example.txt
 .DS_Store

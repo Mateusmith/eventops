@@ -47,6 +47,9 @@ server:
 
 eventops:
   url-publica: ${EVENTOPS_URL_PUBLICA:http://localhost:8081}
+  observabilidade:
+    usuario: ${EVENTOPS_OBSERVABILIDADE_USUARIO:prometheus}
+    senha: ${EVENTOPS_OBSERVABILIDADE_SENHA}
   notificacoes:
     ativas: ${EVENTOPS_NOTIFICACOES_ATIVAS:true}
     intervalo: ${EVENTOPS_NOTIFICACOES_INTERVALO:5s}

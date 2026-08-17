@@ -32,14 +32,14 @@ jobs:
 
       - name: Validar Docker Compose
         run: |
-          docker compose config --quiet
-          docker compose --profile observability config --quiet
+          docker compose --env-file .env.example config --quiet
+          docker compose --env-file .env.example --profile observability config --quiet
 
       - name: Compilar e testar
         run: ./mvnw --batch-mode --no-transfer-progress verify
 
       - name: Construir imagem
-        run: docker compose build aplicacao
+        run: docker compose --env-file .env.example build aplicacao
 
       - name: Publicar cobertura
         if: always()

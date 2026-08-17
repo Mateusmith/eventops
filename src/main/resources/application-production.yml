@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: ${EVENTOPS_BANCO_URL}
+    username: ${EVENTOPS_BANCO_USUARIO}
+    password: ${EVENTOPS_BANCO_SENHA}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${EVENTOPS_EMISSOR_JWT}
+          jwk-set-uri: ${EVENTOPS_URL_CHAVES_JWK}
+  mail:
+    host: ${EVENTOPS_EMAIL_HOST}
+    port: ${EVENTOPS_EMAIL_PORTA:587}
+    username: ${EVENTOPS_EMAIL_USUARIO}
+    password: ${EVENTOPS_EMAIL_SENHA}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+eventops:
+  url-publica: ${EVENTOPS_URL_PUBLICA}
+
+management:
+  server:
+    port: ${EVENTOPS_PORTA_GERENCIAMENTO:9090}
+    address: ${EVENTOPS_ENDERECO_GERENCIAMENTO:0.0.0.0}
+
+springdoc:
+  api-docs:
+    enabled: ${EVENTOPS_OPENAPI_ATIVA:false}
+  swagger-ui:
+    enabled: ${EVENTOPS_SWAGGER_ATIVO:false}

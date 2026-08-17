@@ -1,4 +1,7 @@
 eventops:
+  observabilidade:
+    usuario: prometheus
+    senha: TesteObservabilidade@123
   notificacoes:
     ativas: false
     intervalo: 1h

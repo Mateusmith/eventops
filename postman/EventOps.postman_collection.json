@@ -33,7 +33,6 @@
               "urlencoded": [
                 {"key": "grant_type", "value": "password", "type": "text"},
                 {"key": "client_id", "value": "eventops-postman", "type": "text"},
-                {"key": "client_secret", "value": "eventops-postman-secret", "type": "text"},
                 {"key": "username", "value": "organizador", "type": "text"},
                 {"key": "password", "value": "eventops123", "type": "text"}
               ]
@@ -59,7 +58,6 @@
               "urlencoded": [
                 {"key": "grant_type", "value": "password", "type": "text"},
                 {"key": "client_id", "value": "eventops-postman", "type": "text"},
-                {"key": "client_secret", "value": "eventops-postman-secret", "type": "text"},
                 {"key": "username", "value": "operador", "type": "text"},
                 {"key": "password", "value": "eventops123", "type": "text"}
               ]
