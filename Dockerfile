@@ -12,5 +12,5 @@ COPY --from=construcao /workspace/target/eventops-*.jar app.jar
 USER eventops
 EXPOSE 8080 9090
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=5 \
-  CMD wget -q -O /dev/null http://localhost:${EVENTOPS_PORTA_HEALTHCHECK:-8080}/actuator/health || exit 1
+  CMD wget -q -O /dev/null http://localhost:${EVENTOPS_PORTA_HEALTHCHECK:-8080}/actuator/health/liveness || exit 1
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "/app/app.jar"]

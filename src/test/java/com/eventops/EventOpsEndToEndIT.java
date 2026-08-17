@@ -176,7 +176,7 @@ class EventOpsEndToEndIT {
                         .content("{\"nome\":\"Sem token\"}"))
                 .andExpect(status().isUnauthorized());
 
-        mvc.perform(get("/actuator/health"))
+        mvc.perform(get("/actuator/health/liveness"))
                 .andExpect(status().isOk());
 
         mvc.perform(get("/actuator/prometheus"))

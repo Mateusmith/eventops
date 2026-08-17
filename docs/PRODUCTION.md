@@ -44,4 +44,6 @@ OpenAPI e Swagger ficam desativados por padrao nesse perfil; habilite-os conscie
 4. Execute migrations antes de liberar trafego e valide rollback da versao da aplicacao.
 5. Acompanhe alvo Prometheus, erros HTTP, fila de notificacoes e saturacao do pool JDBC.
 
+Use `/actuator/health/liveness` para reinicio do processo. Falhas de SMTP ou outras dependencias nao devem provocar uma cascata de reinicios; trate readiness e alertas operacionais separadamente.
+
 O procedimento de incidente esta em [runbooks/credential-compromise.md](runbooks/credential-compromise.md).
